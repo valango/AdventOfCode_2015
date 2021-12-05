@@ -3,6 +3,7 @@
 I play this in Dec'21, so there is no track record or stats.
 
 ## Diary
+1800 2017 2023
 
 * `day 01 (04, 10):` Super simple.
 * `day 02 (17, 22):` Super simple.
@@ -10,8 +11,7 @@ I play this in Dec'21, so there is no track record or stats.
 * `day 04 (26, 48):` Wasted some time to find clever solution, but brute force was enough.
 * `day 05 (24, 52):` Quite simple.
 * `day 06 (47, 57):` Carelessness with regExp syntax!.
-
-![](quote.png)
+* `day 07 (77, 86):` I love simulations.
 
 ## Usage
 
