@@ -1,0 +1,26 @@
+{
+  "name": "advent-of-code-15",
+  "version": "1.0.0",
+  "description": "AoC'15 afterwards",
+  "main": "index.js",
+  "homepage": "https://github.com/valango/AdventOfCode_2015",
+  "repository": "git://github.com/valango/AdventOfCode_2015.git",
+  "author": "Villem Alango <villem.alango@gmail.com>",
+  "license": "MIT",
+  "keywords": [],
+  "scripts": {
+    "lint": "eslint ./*.js",
+    "purge": "rm -fr node_modules"
+  },
+  "engines": {
+    "node": ">=10.15.1"
+  },
+  "private": false,
+  "devDependencies": {
+    "eslint": "^8.3.0"
+  },
+  "dependencies": {
+    "assert-fine": "^2.0.0",
+    "lodash": "^4.17.21"
+  }
+}
