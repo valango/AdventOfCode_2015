@@ -8,7 +8,7 @@ I play this in Dec'21, so there is no track record or stats.
 * `day 02:`
 * `day 03:`
 * `day 04 (26, 48):` Wasted some time to find clever solution, but brute force was enough.
-* `day 05:`
+* `day 05 (24, 52):` Quite simple.
 
 ![](quote.png)
 
