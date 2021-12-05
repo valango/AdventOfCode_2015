@@ -9,6 +9,7 @@ I play this in Dec'21, so there is no track record or stats.
 * `day 03:`
 * `day 04 (26, 48):` Wasted some time to find clever solution, but brute force was enough.
 * `day 05 (24, 52):` Quite simple.
+* `day 06 (47, 57):` Carelessness with regExp syntax!.
 
 ![](quote.png)
 
