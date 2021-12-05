@@ -10,8 +10,9 @@
   "keywords": [],
   "scripts": {
     "lint": "eslint ./*.js",
-    "purge": "rm -fr node_modules"
-  },
+    "purge": "rimraf node_modules reports",
+    "test": "jest --config test/jest.config.js"
+   },
   "engines": {
     "node": ">=10.15.1"
   },
@@ -21,6 +22,8 @@
   },
   "dependencies": {
     "assert-fine": "^2.0.0",
-    "lodash": "^4.17.21"
+    "jest": "^27.4.3",
+    "lodash": "^4.17.21",
+    "rimraf": "^3.0.2"
   }
 }

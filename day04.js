@@ -24,7 +24,7 @@ const puzzle1 = (key) => {
 }
 
 const puzzle2 = (key) => {
-  return key === '-' ? undefined : solve(key, 6)
+  return solve(key, 6)
 }
 
 const parse = (dsn) => {
@@ -34,7 +34,7 @@ const parse = (dsn) => {
 module.exports = { parse, puzzles: [puzzle1, puzzle2] }
 
 rawInput[1] = 'abcdef'
-rawInput[2] = '-'
+rawInput[2] = ''
 
 /*
 day04, puzzle #0 	DEMO(        3047610 µs): 609043 	REAL(        5057914 µs): 1647256

@@ -4,7 +4,6 @@
 const { assert, print, usecsFrom } = require('./utils')
 const { opendirSync } = require('fs')
 const maxN = BigInt(Number.MAX_SAFE_INTEGER)
-const argv = process.argv.slice(2)
 
 const helpText = `Command line parameters:
   integer - day number(s), (default: most recent day only)
@@ -17,49 +16,46 @@ assert.beforeThrow((assertionError, args) => {
   console.error('Assertion FAILED with args:', args)
 })
 
-const dir = opendirSync('.')
-let days = new Set(), entry, modules = [], cliFlags = ''
+const parseCLI = (argv) => {
+  let days = new Set(), flags = ''
 
-while ((entry = dir.readSync())) {
-  if (entry.isFile() && /^day\d\d\.js$/.test(entry.name)) {
-    modules.push(entry.name.slice(3, 5))
-  }
-}
-
-assert(modules.length, 'No dayNN.js modules found!')
-
-for (const arg of argv) {
-  if (/^\d+$/.test(arg)) {
-    days.add(arg.padStart(2, '0'))
-  } else {
-    if (arg.includes('h')) {
-      print(helpText)
-      return 0
+  for (const arg of argv) {
+    if (/^\d+$/.test(arg)) {
+      days.add(arg.padStart(2, '0'))
+    } else {
+      if (arg.includes('h')) {
+        return { code: 0, message: helpText }
+      }
+      if (Array.from(arg).some(c => !'abd'.includes(c))) {
+        return { code: 1, message: `Illegal parameter '${arg}' - use -h option for help!\n` }
+      }
+      flags += arg
     }
-    if (Array.from(arg).some(c => !'abd'.includes(c))) {
-      print(`Illegal parameter '${arg}' - use -h option for help!\n`)
-      return 1
-    }
-    cliFlags += arg
   }
+
+  const useBoth = flags.includes('b'), useDemo = flags.includes('d')
+
+  return (useBoth && useDemo)
+    ? { code: 1, message: `Can not use both 'b' and 'd' simultaneously!\n` }
+    : { allDays: flags.includes('a'), days, useBoth, useDemo }
 }
 
-const useBoth = cliFlags.includes('b'), useDemo = cliFlags.includes('d')
+const prepareDays = (requiredDays, modules, allDays) => {
+  let days
 
-if (useBoth && useDemo) {
-  print(`Can not use both 'b' and 'd' simultaneously!\n`)
-  return 1
-}
-
-if (cliFlags.includes('a')) {
-  days = modules.sort()
-} else {
-  if (days.size) {
-    days = Array.from(days).filter(day => modules.includes(day))
-    assert(days.length, 'Mo modules for given day(s)')
+  if (allDays) {
+    days = modules.sort()
   } else {
-    days = [modules.sort().reverse()[0]]
+    if (requiredDays.size) {
+      days = Array.from(requiredDays).filter(day => modules.includes(day))
+      if (days.length !== requiredDays.size) {
+        return 'No modules for given day(s)!\n'
+      }
+    } else {
+      days = [modules.sort().reverse()[0]]
+    }
   }
+  return days
 }
 
 const execute = (puzzle, data) => {
@@ -75,32 +71,71 @@ const execute = (puzzle, data) => {
   }
 }
 
-const runReport = (puzzle, ds, label) => {
-  const res = ds && execute(puzzle, ds)
+const runAndReport = (puzzle, ds, label, print) => {
+  const res = ds && execute(puzzle, ds, print('\t' + label))
 
-  res ? print(`\t${label}(${res.usecs.padStart(15)} µs): ${res.result} `)
-    : print(`\t${label}: n/a\t\t`)
+  print(res ? `(${res.usecs.padStart(15)} µs): ${res.result} ` : `: n/a\t\t\t`)
 }
 
-for (const day of days) {
-  const loadable = require('./day' + day)
+const runPuzzles = (selectedDays, { useBoth, useDemo, print }) => {
+  for (const day of selectedDays) {
+    const loadable = require('./day' + day)
 
-  for (let d, d0, d1, n = 0; n <= 1; ++n) {
-    print(`day${day}, puzzle #${n + 1} `)
+    for (let d, d0, d1, n = 0, dLabel = 'DEMO'; n <= 1; ++n) {
+      print(`day${day}, puzzle #${n + 1} `)
 
-    if (useBoth || useDemo) {
-      if (n && (d = loadable.parse(2)) !== undefined) {
-        d1 = d
-      } else {
-        d1 = loadable.parse(1)
+      if (useBoth || useDemo) {
+        if (n && (d = loadable.parse(2)) !== undefined) {
+          d1 = d, dLabel = 'DEMO'
+        }
+        if (d1 === undefined) {
+          d1 = loadable.parse(1)
+
+          if (!d1 && !useBoth && (d1 = loadable.parse(0))) {
+            dLabel = 'MAIN'
+          }
+        }
+        runAndReport(loadable.puzzles[n], d1, dLabel, print)
       }
-      runReport(loadable.puzzles[n], d1, 'DEMO')
-    }
 
-    if (!useDemo) {
-      if (d0 === undefined) d0 = loadable.parse(0)
-      runReport(loadable.puzzles[n], d0, 'REAL')
+      if (!useDemo) {
+        if (d0 === undefined) d0 = loadable.parse(0)
+        runAndReport(loadable.puzzles[n], d0, 'MAIN', print)
+      }
+      print('\n')
     }
-    print('\n')
   }
 }
+
+exports = module.exports = (argv) => {
+  const modules = []
+
+  for (let dir = opendirSync('.'), entry; (entry = dir.readSync());) {
+    if (entry.isFile() && /^day\d\d\.js$/.test(entry.name)) {
+      modules.push(entry.name.slice(3, 5))
+    }
+  }
+
+  const { allDays, code, days, message, useBoth, useDemo } = parseCLI(argv)
+
+  if (message) {
+    print(message)
+    return code
+  }
+
+  assert(modules.length, 'No dayNN.js modules found!')
+
+  const selectedDays = prepareDays(days, modules, allDays)
+
+  if (typeof selectedDays === 'string') {
+    print(message)
+    return 1
+  }
+
+  runPuzzles(selectedDays, { useBoth, useDemo, print })
+
+  return 0
+}
+
+//  Expose internals for module testing.
+Object.assign(exports, { execute, parseCLI, prepareDays, runAndReport, runPuzzles })
