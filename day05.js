@@ -58,7 +58,6 @@ const parse = (dsn) => {
   }
 }
 
-// YYNNN
 rawInput[1] = `
 ugknbfddgicrmopn
 aaa
@@ -76,7 +75,6 @@ module.exports = { parse, puzzles: [puzzle1, puzzle2] }
 
 /*
 12:28 12:52 13:20
-day05, set #0
-	puzzle-1 (           4196 µsecs): 238
-	puzzle-2 (           5920 µsecs): 69
+day05, puzzle #1 	DEMO(            155 µs): 2 	REAL(           4138 µs): 238
+day05, puzzle #2 	DEMO(            166 µs): 2 	REAL(           6017 µs): 69
  */

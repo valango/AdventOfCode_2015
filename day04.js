@@ -24,7 +24,7 @@ const puzzle1 = (key) => {
 }
 
 const puzzle2 = (key) => {
-  return solve(key, 6)
+  return key === '-' ? undefined : solve(key, 6)
 }
 
 const parse = (dsn) => {
@@ -33,8 +33,10 @@ const parse = (dsn) => {
 
 module.exports = { parse, puzzles: [puzzle1, puzzle2] }
 
+rawInput[1] = 'abcdef'
+rawInput[2] = '-'
+
 /*
-day04, set #0
-	puzzle-1 (        1394971 µsecs): 282749
-	puzzle-2 (       46649016 µsecs): 9962624
+day04, puzzle #0 	DEMO(        3047610 µs): 609043 	REAL(        5057914 µs): 1647256
+day04, puzzle #1 	DEMO: n/a			                    REAL(       40344958 µs): 9962624
  */
