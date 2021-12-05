@@ -3,12 +3,13 @@ const rawInput = [require('./data/day07')]
 const { assert, parseInt } = require('./utils')
 
 const puzzle1 = (data) => {
-  const wires = {}, count = data.length
-  let pending, added
+  const wires = {}
+  let pending, added, names = new Set()
 
   const read = (src) => {
     if (typeof src === 'number') return src
     if (wires[src] === undefined) {
+      assert(src, 'read(undefined)')
       throw src
     }
     return wires[src]
@@ -20,54 +21,61 @@ const puzzle1 = (data) => {
   }
 
   do {
-    added = 0
-    pending = []
+    added = pending = 0
+
     for (const { dst, op, src } of data) {
-      if (wires[dst] !== undefined) {
-        continue
-      }
-      // assert(wires[dst] === undefined, 'duplicate %o', { op, src, dst })
-      try {
-        if (op === 'COPY') {
-          write(dst, read(src[0]))
-        } else if (op === 'NOT') {
-          write(dst, 0xffff ^ read(src[0]))
-        } else if (op === 'AND') {
-          write(dst, read(src[0]) & read(src[1]))
-        } else if (op === 'OR') {
-          write(dst, read(src[0]) | read(src[1]))
-        } else if (op === 'LSHIFT') {
-          write(dst, read(src[0]) << read(src[1]))
-        } else if (op === 'RSHIFT') {
-          write(dst, read(src[0]) >> read(src[1]))
-        } else {
-          assert(false, 'bad command %o', { op, src, dst })
+      assert(names === undefined || !names.has(dst), 'duplicate assignment %s', dst)
+
+      if (wires[dst] === undefined) {
+        try {
+          if (op === 'COPY') {
+            write(dst, read(src[0]))
+          } else if (op === 'NOT') {
+            write(dst, 0xffff ^ read(src[0]))
+          } else if (op === 'AND') {
+            write(dst, read(src[0]) & read(src[1]))
+          } else if (op === 'OR') {
+            write(dst, read(src[0]) | read(src[1]))
+          } else if (op === 'LSHIFT') {
+            write(dst, read(src[0]) << read(src[1]))
+          } else if (op === 'RSHIFT') {
+            write(dst, read(src[0]) >> read(src[1]))
+          } else {
+            assert(false, 'bad command %o', { op, src, dst })
+          }
+          added += 1
+        } catch (e) {
+          if (typeof e !== 'string') {
+            throw e
+          }
+          pending += 1
         }
-        added += 1
-      } catch (e) {
-        if (typeof e !== 'string') throw e
-        pending.push(e)
       }
     }
-  } while (pending.length && added)
-  // console.log(wires)
+    names = undefined
+  } while (pending && added)
 
-  return wires.a
+  assert(!pending, 'Loop logic')
+
+  return wires['a']
 }
 
 const puzzle2 = (data) => {
   const a = puzzle1(data)
-  const i = data.findIndex(({ dst }) => dst === 'b')
-  data[i].src = [a]
 
-  return puzzle1(data)
+  if (a !== undefined) {
+    const i = data.findIndex(({ dst }) => dst === 'b')
+    data[i].src = [a]
+
+    return puzzle1(data)
+  }
 }
 
 const parse = (dsn) => {
   let data = rawInput[dsn]
 
   if (data && (data = data.split('\n').filter(v => Boolean(v))).length) {
-    return data.map((row, i) => {
+    return data.map((row) => {
       let op, src, dst, v
       const r = row.split(' '), l = r.length
       if (l === 3) {
@@ -86,13 +94,13 @@ const parse = (dsn) => {
 //  Example data. If rawInput[2] is defined too, then 1 and 2 are for different puzzles.
 rawInput[1] = `
 123 -> x
-456 -> y
-x AND y -> d
-x OR y -> e
+456 -> b
+x AND b -> d
+x OR b -> e
 x LSHIFT 2 -> f
-y RSHIFT 2 -> g
+b RSHIFT 2 -> g
 NOT x -> a
-NOT y -> i`
+NOT b -> i`
 
 module.exports = { parse, puzzles: [puzzle1, puzzle2] }
 
