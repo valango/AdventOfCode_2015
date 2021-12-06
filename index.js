@@ -12,10 +12,15 @@ const helpText = `Command line parameters:
   d: example data only (mutually exclusive with 'b' option
   h: print this information and terminate\n\n`
 
+/* istanbul ignore next */
 assert.beforeThrow((assertionError, args) => {
   console.error('Assertion FAILED with args:', args)
 })
 
+/**
+ * @param {string[]} argv
+ * @returns {Object}
+ */
 const parseCLI = (argv) => {
   let days = new Set(), flags = ''
 
@@ -40,6 +45,12 @@ const parseCLI = (argv) => {
     : { allDays: flags.includes('a'), days, useBoth, useDemo }
 }
 
+/**
+ * @param {Set<string>} requiredDays  - ['01', '02']
+ * @param {Array<string>} modules     - ['day01.js', 'day25.js']
+ * @param {boolean} allDays
+ * @returns {Array<string>}           - ['01']
+ */
 const prepareDays = (requiredDays, modules, allDays) => {
   let days
 
@@ -58,10 +69,15 @@ const prepareDays = (requiredDays, modules, allDays) => {
   return days
 }
 
+/**
+ * @param {function(*):*} puzzle
+ * @param {*} data
+ * @returns {{result: number, usecs: number}}
+ */
 const execute = (puzzle, data) => {
   const t0 = process.hrtime()
   let result = puzzle(data)
-  const usecs = Math.floor(usecsFrom(t0)) + ''
+  const usecs = Math.floor(usecsFrom(t0))
 
   if (result !== undefined) {
     if (typeof result === 'bigint' && result < maxN) {
@@ -71,15 +87,30 @@ const execute = (puzzle, data) => {
   }
 }
 
-const runAndReport = (puzzle, ds, label, print) => {
-  const res = ds && execute(puzzle, ds, print('\t' + label))
+/* istanbul ignore next */
+/**
+ * @param {function(*):*} puzzle
+ * @param {*} data
+ * @param {string} label
+ * @param {function(string)} print
+ */
+const runAndReport = (puzzle, data, label, print) => {
+  const res = data && execute(puzzle, data, print('\t' + label))
 
-  print(res ? `(${res.usecs.padStart(15)} µs): ${res.result} ` : `: n/a\t\t\t`)
+  print(res ? `(${(res.usecs + '').padStart(15)} µs): ${res.result} ` : `: n/a\t\t\t`)
 }
 
-const runPuzzles = (selectedDays, { useBoth, useDemo, print }) => {
+/**
+ * @param {Array<string>} selectedDays
+ * @param {boolean} useBoth
+ * @param {boolean} useDemo
+ * @param {function(string)} print
+ * @param {Array<Object>} [modules]
+ */
+const runPuzzles = (selectedDays, { useBoth, useDemo, print }, modules = undefined) => {
   for (const day of selectedDays) {
-    const loadable = require('./day' + day)
+    /* istanbul ignore next */
+    const loadable = modules ? modules[day] : require('./day' + day)
 
     for (let d, d0, d1, n = 0, dLabel = 'DEMO'; n <= 1; ++n) {
       print(`day${day}, puzzle #${n + 1} `)
@@ -107,6 +138,7 @@ const runPuzzles = (selectedDays, { useBoth, useDemo, print }) => {
   }
 }
 
+/* istanbul ignore next */
 exports = module.exports = (argv) => {
   const modules = []
 
