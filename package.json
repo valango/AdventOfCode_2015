@@ -1,8 +1,8 @@
 {
   "name": "advent-of-code-15",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "AoC'15 afterwards",
-  "main": "index.js",
+  "main": "run",
   "homepage": "https://github.com/valango/AdventOfCode_2015",
   "repository": "git://github.com/valango/AdventOfCode_2015.git",
   "author": "Villem Alango <villem.alango@gmail.com>",

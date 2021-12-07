@@ -1,6 +1,6 @@
 'use strict'
 const rawInput = [require('./data/day02')]
-const { parseInt } = require('./utils')
+const { parseInt } = require('./runner/utils')
 
 const puzzle1 = (data) => {
   let total = 0

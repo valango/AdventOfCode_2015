@@ -1,6 +1,6 @@
 'use strict'
 const rawInput = [require('./data/day03')]
-const { assert } = require('./utils')
+const { assert } = require('./runner/utils')
 
 const alphabet = '<>^v'
 const dirs = [-1, 0, 1, 0, 0, -1, 0, 1]

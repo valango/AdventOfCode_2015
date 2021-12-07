@@ -1,7 +1,8 @@
-//  /index.js
+//  runner/index.js
 'use strict'
 
-const { assert, print, usecsFrom } = require('./utils')
+const dumper = require('./dumper')
+const { assert, print, say, usecsFrom } = require('./utils')
 const { opendirSync } = require('fs')
 const maxN = BigInt(Number.MAX_SAFE_INTEGER)
 
@@ -10,7 +11,9 @@ const helpText = `Command line parameters:
   a: all days
   b: both datasets (default: main data only)
   d: example data only (mutually exclusive with 'b' option
-  h: print this information and terminate\n\n`
+  h: print this information and terminate
+  j: generate output as JSON-formatted rows
+  m: generate markdown output (default: text table for multiple, JSON for single puzzle)\n\n`
 
 /* istanbul ignore next */
 assert.beforeThrow((assertionError, args) => {
@@ -31,7 +34,7 @@ const parseCLI = (argv) => {
       if (arg.includes('h')) {
         return { code: 0, message: helpText }
       }
-      if (Array.from(arg).some(c => !'abd'.includes(c))) {
+      if (Array.from(arg).some(c => !'abdjm'.includes(c))) {
         return { code: 1, message: `Illegal parameter '${arg}' - use -h option for help!\n` }
       }
       flags += arg
@@ -39,10 +42,15 @@ const parseCLI = (argv) => {
   }
 
   const useBoth = flags.includes('b'), useDemo = flags.includes('d')
+  const makeJSON = flags.includes('j'), makeMd = flags.includes('m')
 
-  return (useBoth && useDemo)
-    ? { code: 1, message: `Can not use both 'b' and 'd' simultaneously!\n` }
-    : { allDays: flags.includes('a'), days, useBoth, useDemo }
+  if (useBoth && useDemo) {
+    return { code: 1, message: `Can not use both 'b' and 'd' simultaneously!\n` }
+  }
+  if (makeJSON && makeMd) {
+    return { code: 1, message: `Can not use both 'm' and 'j' simultaneously!\n` }
+  }
+  return { allDays: flags.includes('a'), days, makeMd, makeJSON, useBoth, useDemo }
 }
 
 /**
@@ -72,18 +80,18 @@ const prepareDays = (requiredDays, modules, allDays) => {
 /**
  * @param {function(*):*} puzzle
  * @param {*} data
- * @returns {{result: number, usecs: number}}
+ * @returns {{result: value, time: number}|undefined}
  */
 const execute = (puzzle, data) => {
   const t0 = process.hrtime()
-  let result = puzzle(data)
-  const usecs = Math.floor(usecsFrom(t0))
+  let value = puzzle(data)
+  const time = Math.floor(usecsFrom(t0))
 
-  if (result !== undefined) {
-    if (typeof result === 'bigint' && result < maxN) {
-      result = Number(result)
+  if (value !== undefined) {
+    if (typeof value === 'bigint' && value < maxN) {
+      value = Number(value)
     }
-    return { result, usecs }
+    return { value, time }
   }
 }
 
@@ -91,51 +99,67 @@ const execute = (puzzle, data) => {
 /**
  * @param {function(*):*} puzzle
  * @param {*} data
- * @param {string} label
- * @param {function(string)} print
+ * @param {string} tag
+ * @param {function(string)} say
+ * @returns {{usecs:number, value:*}|undefined}
  */
-const runAndReport = (puzzle, data, label, print) => {
-  const res = data && execute(puzzle, data, print('\t' + label))
+const runAndReport = (puzzle, data, tag, say) => {
+  say(` ${tag}...`)
+  const res = data && execute(puzzle, data)
+  say(`\b\b\b ok`)
 
-  print(res ? `(${(res.usecs + '').padStart(15)} µs): ${res.result} ` : `: n/a\t\t\t`)
+  return res
 }
 
 /**
- * @param {Array<string>} selectedDays
+ * @param {Array<string>} days
  * @param {boolean} useBoth
  * @param {boolean} useDemo
- * @param {function(string)} print
- * @param {Array<Object>} [modules]
+ * @param {function(string)} say
+ * @param {Array<Object>} [modules]     - for testing only.
+ * @returns {Array<Object>}
  */
-const runPuzzles = (selectedDays, { useBoth, useDemo, print }, modules = undefined) => {
-  for (const day of selectedDays) {
-    /* istanbul ignore next */
-    const loadable = modules ? modules[day] : require('./day' + day)
+const runPuzzles = (days, { useBoth, useDemo }, say, modules = undefined) => {
+  const longLine = '\r'.padEnd(70) + '\r', output = []
 
-    for (let d, d0, d1, n = 0, dLabel = 'DEMO'; n <= 1; ++n) {
-      print(`day${day}, puzzle #${n + 1} `)
+  for (const day of days) {
+    /* istanbul ignore next */
+    const loadable = modules ? modules[day] : require('../day' + day), record = { day }
+
+    say(`day${day}:`)
+
+    for (let d, d0, d1, n = 0, result; n <= 1; ++n) {
+      say(`\tpuzzle #${n + 1} `)
+      // print(`day${day}, puzzle #${n + 1} `)
 
       if (useBoth || useDemo) {
         if (n && (d = loadable.parse(2)) !== undefined) {
-          d1 = d, dLabel = 'DEMO'
+          d1 = d
         }
         if (d1 === undefined) {
           d1 = loadable.parse(1)
 
           if (!d1 && !useBoth && (d1 = loadable.parse(0))) {
-            dLabel = 'MAIN'
+            record.comment = 'main data was used'
           }
         }
-        runAndReport(loadable.puzzles[n], d1, dLabel, print)
+        if ((result = runAndReport(loadable.puzzles[n], d1, 'demo', say))) {
+          (record.demo || (record.demo = {}))[n + 1 + ''] = result
+        }
       }
 
       if (!useDemo) {
         if (d0 === undefined) d0 = loadable.parse(0)
-        runAndReport(loadable.puzzles[n], d0, 'MAIN', print)
+
+        if ((result = runAndReport(loadable.puzzles[n], d0, 'main', say))) {
+          (record.main || (record.main = {}))[n + 1 + ''] = result
+        }
       }
-      print('\n')
+      say(longLine)
     }
+    output.push(record)
   }
+  return output
 }
 
 /* istanbul ignore next */
@@ -148,7 +172,7 @@ exports = module.exports = (argv) => {
     }
   }
 
-  const { allDays, code, days, message, useBoth, useDemo } = parseCLI(argv)
+  const { allDays, code, days, makeJSON, makeMd, message, useBoth, useDemo } = parseCLI(argv)
 
   if (message) {
     print(message)
@@ -164,7 +188,15 @@ exports = module.exports = (argv) => {
     return 1
   }
 
-  runPuzzles(selectedDays, { useBoth, useDemo, print })
+  const dump = dumper({ useBoth, useDemo }, print)
+
+  const results = runPuzzles(selectedDays, { useBoth, useDemo }, say)
+
+  if (results.length) {
+    dump(results, { makeJSON, makeMd })
+  } else {
+    say('There is no results to be shown!\n')
+  }
 
   return 0
 }
