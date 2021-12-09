@@ -12,6 +12,7 @@ I play this in Dec'21, so there is no track record or stats.
 * `day 05 (24, 52):` Quite simple.
 * `day 06 (47, 57):` Carelessness with regExp syntax!.
 * `day 07 (77, 86):` I love simulations!
+* `day 08 (10, 20):` Super simple.
 
 
 ## Code
@@ -30,6 +31,7 @@ The following report was generated using command `./run abm`.
 |05|238|69|2464|4702|2|2|161|157|
 |06|543903|14687245|53984|56296|||||
 |07|16076|2797|42450|115261|65412|65412|274|190|
+|08|1342|2074|2452|2990|12|19|164|143|
 
 ### Usage
 
