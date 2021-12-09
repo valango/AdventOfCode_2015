@@ -1,6 +1,6 @@
 'use strict'
-const rawInput = [require('./data/day03')]
-const { assert } = require('./runner/utils')
+const { assert, loadData } = require('./core/utils')
+const rawInput = [loadData(module.filename)]
 
 const alphabet = '<>^v'
 const dirs = [-1, 0, 1, 0, 0, -1, 0, 1]
@@ -26,7 +26,12 @@ const puzzle2 = (data) => {
 }
 
 const parse = (dsn) => {
-  return rawInput[dsn]
+  let data = rawInput[dsn]
+
+  if (data && (data = data.split('\n').filter(v => Boolean(v))).length) {
+    return data && data[0]
+  }
+  return data   //  NOTE: The runner will distinguish between undefined and falsy!
 }
 
 //  Example data. If rawInput[2] is defined too, then 1 and 2 are for different puzzles.

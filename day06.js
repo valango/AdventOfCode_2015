@@ -1,6 +1,6 @@
 'use strict'
-const rawInput = [require('./data/day06')]
-const { assert, parseInt } = require('./runner/utils')
+const { assert, loadData, parseInt } = require('./core/utils')
+const rawInput = [loadData(module.filename)]
 
 const interprete1 = (map, { op, corners }) => {
   for (let i = corners[0]; i <= corners[2]; ++i) {

@@ -1,5 +1,6 @@
 'use strict'
-const rawInput = [require('./data/day05')]    //  String analysis
+const { loadData } = require('./core/utils')
+const rawInput = [loadData(module.filename)]
 
 const badStrings = 'ab cd pq xy'.split(' ')
 const vowels = 'aeiou'

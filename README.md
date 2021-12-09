@@ -11,7 +11,7 @@ I play this in Dec'21, so there is no track record or stats.
 * `day 04 (26, 48):` Wasted some time to find clever solution, but brute force was enough.
 * `day 05 (24, 52):` Quite simple.
 * `day 06 (47, 57):` Carelessness with regExp syntax!.
-* `day 07 (77, 86):` I love simulations.
+* `day 07 (77, 86):` I love simulations!
 
 
 ## Code
@@ -51,8 +51,12 @@ is not defined, it falls back to main dataset.
 
 ### Coding
 
-To start with a new puzzle, first copy the contents of [template.js](./template.js) to
-a new file named like `day26.js` in project root directory and have fun coding!.
+To start with a new puzzle for, say, _day 14_, do:
+1. copy the contents of [template.js](./template.js) to `day14.js`;
+1. create `day14.txt` in `./data` directory and populate it with data from the website;
+1. have fun!
+
+It is recommended to copy the puzzle data into a text file in `data` folder.
 
 ### Debugging
 

@@ -1,7 +1,3 @@
-//  data/day05.js
-'use strict'
-
-module.exports = `
 zgsnvdmlfuplrubt
 vlhagaovgqjmgvwq
 ffumlmqwfcsyqpss
@@ -1002,4 +998,3 @@ sztzziuqroeidcus
 pxdfvcpvwaddrzwv
 phdqqxleqdjfgfbg
 cqfikbgxvjmnfncy
-`

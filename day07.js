@@ -1,6 +1,6 @@
 'use strict'
-const rawInput = [require('./data/day07')]
-const { assert, parseInt } = require('./runner/utils')
+const { assert, loadData, parseInt } = require('./core/utils')
+const rawInput = [loadData(module.filename)]
 
 const puzzle1 = (data) => {
   const wires = {}

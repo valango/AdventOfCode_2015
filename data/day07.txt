@@ -1,7 +1,3 @@
-//  data/day07.js
-'use strict'
-
-module.exports = `
 lf AND lq -> ls
 iu RSHIFT 1 -> jn
 bo OR bu -> bv
@@ -341,4 +337,3 @@ hf AND hl -> hn
 NOT h -> i
 NOT hn -> ho
 he RSHIFT 5 -> hh
-`

@@ -1,5 +1,6 @@
 'use strict'
-const rawInput = [require('./data/day01')]
+const { loadData } = require('./core/utils')
+const rawInput = [loadData(module.filename)]
 
 const compute = (data, getBasement = false) => {
   let floor = 0
