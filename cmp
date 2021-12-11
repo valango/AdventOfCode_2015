@@ -1,0 +1,5 @@
+cmp core/dumper.js ../aoc21/core/dumper.js
+cmp core/index.js ../aoc21/core/index.js
+cmp core/utils.js ../aoc21/core/utils.js
+cmp template.js ../aoc21/template.js
+cmp run ../aoc21/run
