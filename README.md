@@ -15,6 +15,7 @@ I play this in Dec'21, so there is no track record or stats.
 * `day 08 (10, 20):` Super simple.
 * `day 09 (??, ??):` Super simple with permutations.
 * `day 10 (26, 28):` Super simple.
+* `day 11 (80, 84):` Lots of tiny details w array indexes.
 
 ### Bits Of Wisdom
 1. _**Hold your horses**_ until you have understood the task and have clear idea.
@@ -43,6 +44,7 @@ The following report was generated using command `./run abm`.
 |08|1342|2074|12|19|2049|2480|125|146|
 |09|207|804|605|982|128091|140686|325|127|
 |10|252594|3579328| | |36926|535464| | |
+|11|vzbxkghc|vzbxkghd|abcdefgj|abcdefgk|10|13|166|62|
 
 ### Usage
 
