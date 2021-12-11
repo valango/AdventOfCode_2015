@@ -1,5 +1,5 @@
 'use strict'
-const { assert, loadData, parseInt } = require('./core/utils')
+const { loadData } = require('./core/utils')
 const rawInput = [loadData(module.filename)]
 
 rawInput[1] = loadData('day081.txt')
