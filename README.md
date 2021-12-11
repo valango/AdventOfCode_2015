@@ -14,13 +14,14 @@ I play this in Dec'21, so there is no track record or stats.
 * `day 07 (77, 86):` I love simulations!
 * `day 08 (10, 20):` Super simple.
 * `day 09 (??, ??):` Super simple with permutations.
+* `day 10 (26, 28):` Super simple.
 
 ### Bits Of Wisdom
 1. _**Hold your horses**_ until you have understood the task and have clear idea.
 1. [_**KISS**_](https://en.wikipedia.org/wiki/KISS_principle) while you can_ -
    try a non-elegant, but simple brute-force approach first.
 1. When code seems to overwhelm you, pull back and _**meditate**_.
-1. _Hold to [**clean code**](https://en.wikipedia.org/wiki/Robert_C._Martin)_,
+1. _Hold to [**Clean Code**](https://en.wikipedia.org/wiki/Robert_C._Martin)_,
    declare function signatures.
 
 ## Code
@@ -41,6 +42,7 @@ The following report was generated using command `./run abm`.
 |07|16076|2797|65412|65412|41286|111607|213|241|
 |08|1342|2074|12|19|2049|2480|125|146|
 |09|207|804|605|982|128091|140686|325|127|
+|10|252594|3579328| | |36926|535464| | |
 
 ### Usage
 
