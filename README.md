@@ -17,7 +17,8 @@ I play this in Dec'21, so there is no track record or stats.
 * `day 10 (26, 28):` Super simple.
 * `day 11 (80, 84):` Lots of tiny details w array indexes.
 * `day 12 (12, 20):` Simple.
-* `day 12 (22, 25):` Simple, day#09 code was re-usable.
+* `day 13 (22, 25):` Simple, day#09 code was re-usable.
+* `day 14 (33, 14):` Simple.
 
 ### Bits Of Wisdom
 1. _**Hold your horses**_ until you have understood the task and have clear idea.
@@ -49,6 +50,7 @@ The following report was generated using command `./run abm`.
 |11|vzbxkghc|vzbxkghd|abcdefgj|abcdefgk|10|13|166|62|
 |12|156366|96852|16|6|839|6373|146|135|
 |13|618|601|330|286|203292|2133490|695|11380|
+|14|2660|1256|1120|689|4865|9263|621|892|
 
 ### Usage
 

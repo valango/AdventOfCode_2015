@@ -37,7 +37,7 @@ const getDelta = (data, a, b) => {
 }
 
 const evaluate = (data, people) => {
-  let score = 0, last = people.length - 1, a, b, r
+  let score = 0, last = people.length - 1, a, b
 
   for (let i = 0; i <= last && (b = people[i]); ++i, a = b) {
     if (a) {
@@ -63,7 +63,7 @@ const solve = (data, people) => {
   return arrangements[0].score
 }
 
-const puzzle1 = (data, findWorst = false) => {
+const puzzle1 = (data) => {
   return solve(data, createNamesArray(data).sort())
 }
 
